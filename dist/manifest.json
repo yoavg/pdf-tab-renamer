@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Papers-tabs-renamer",
+  "version": "0.1",
+  "description": "Fix uninformative tab names from popular websites of scientific papers to show the paper name.",
+  "permissions": [
+    "tabs",
+    "scripting"
+  ],
+  "icons": { "128": "assets/ugly-icon.png" },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": ["https://scholar.google.com/*", "https://arxiv.org/*", "https://aclanthology.org/*", "https://proceedings.mlr.press/*", "https://www.jmlr.org/*", "https://proceedings.neurips.cc/*", "https://proceedings.nips.cc/*", "https://openreview.net/*"]
+}
+
