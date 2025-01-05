@@ -120,6 +120,26 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
           args: [tab]
       })
   }
+  if (tabDomain === "ieeexplore.ieee.org" && tab.url.includes("/stamp/stamp.jsp")) {
+      chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: (tab) => {
+              console.log(document.title);
+              if (document.title !== "IEEE Xplore Full-Text PDF:") return;
+              const docid = tab.url.match(/arnumber=([^&]+)/)[1];
+              console.log(docid);
+              const htmlUrl = `https://ieeexplore.ieee.org/document/${docid}`;
+              fetch(htmlUrl)
+              .then((response) => response.text()
+                    .then((text) => {
+                        // wait a second to make the change stick.
+                        setTimeout(() => { document.title = `[PDF] ${text.match(/<title>(.*)<\/title>/)[1]}`; }, 1000);
+                    }))
+          },
+          args: [tab]
+      })
+  }
+
 }
 
 // Listener: Checks when a new tab is updated

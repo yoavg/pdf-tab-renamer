@@ -20,6 +20,8 @@ The extension currently handles:
     - neurips.cc
     - aclanthology.org
     - openreview.net (including ICLR)
+    - openaccess.thecvf.com
+    - ieeexplore.ieee.org (not very well tested)
 - The 'View article' page of Google Scholar
 
 # Installing
