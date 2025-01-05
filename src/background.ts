@@ -39,6 +39,16 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
         },
       args: [tab]
     })
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => {
+        const link = (document.querySelector("link[rel*='icon']") as HTMLLinkElement) || document.createElement('link');
+        (link as HTMLLinkElement).type = 'image/x-icon';
+        (link as HTMLLinkElement).rel = 'shortcut icon';
+        (link as HTMLLinkElement).href = 'https://aclanthology.org/aclicon.ico';
+        document.head.appendChild(link);
+      }
+    });
   }
   if (tabDomain === "proceedings.mlr.press" && tab.url.endsWith(".pdf")) {
     chrome.scripting.executeScript({
