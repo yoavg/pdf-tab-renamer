@@ -11,6 +11,6 @@
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": ["https://scholar.google.com/*", "https://arxiv.org/*", "https://aclanthology.org/*", "https://proceedings.mlr.press/*", "https://www.jmlr.org/*", "https://proceedings.neurips.cc/*", "https://proceedings.nips.cc/*", "https://openreview.net/*"]
+  "host_permissions": ["https://scholar.google.com/*", "https://arxiv.org/*", "https://aclanthology.org/*", "https://proceedings.mlr.press/*", "https://www.jmlr.org/*", "https://proceedings.neurips.cc/*", "https://proceedings.nips.cc/*", "https://openreview.net/*", "https://openaccess.thecvf.com/*"]
 }
 

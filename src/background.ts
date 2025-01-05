@@ -88,7 +88,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       args: [tab]
     })
   }
-  if (tabDomain === "openreview.net" || tab.url.includes("/pdf?")) {
+  if (tabDomain === "openreview.net" && tab.url.includes("/pdf?")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -103,6 +103,22 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
         },
       args: [tab]
     })
+  }
+  if (tabDomain === "openaccess.thecvf.com" && tab.url.endsWith(".pdf")) {
+      chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: (tab) => {
+              if (document.title !== "") return;
+              const htmlUrl = tab.url.replace("/papers/", "/html/").replace(".pdf", ".html");
+              fetch(htmlUrl)
+              .then((response) => response.text()
+                    .then((text) => {
+                        // wait a second to make the change stick.
+                        setTimeout(() => { document.title = `[PDF] ${text.match(/<meta name="citation_title" content="(.*)">/)[1]}`; }, 1000);
+                    }))
+          },
+          args: [tab]
+      })
   }
 }
 
