@@ -22,6 +22,7 @@ The extension currently handles:
     - openreview.net (including ICLR)
     - openaccess.thecvf.com
     - ieeexplore.ieee.org (not very well tested)
+    - biorxiv
 - The 'View article' page of Google Scholar
 
 # Installing

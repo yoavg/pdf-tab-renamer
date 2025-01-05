@@ -124,11 +124,28 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: (tab) => {
-              console.log(document.title);
               if (document.title !== "IEEE Xplore Full-Text PDF:") return;
               const docid = tab.url.match(/arnumber=([^&]+)/)[1];
-              console.log(docid);
               const htmlUrl = `https://ieeexplore.ieee.org/document/${docid}`;
+              fetch(htmlUrl)
+              .then((response) => response.text()
+                    .then((text) => {
+                        // wait a second to make the change stick.
+                        setTimeout(() => { document.title = `[PDF] ${text.match(/<title>(.*)<\/title>/)[1]}`; }, 1000);
+                    }))
+          },
+          args: [tab]
+      })
+  }
+  //https://www.biorxiv.org/content/10.1101/2025.01.05.631349v1
+  //https://www.biorxiv.org/content/10.1101/2025.01.05.631349v1.full.pdf
+  if (tabDomain === "www.biorxiv.org" && tab.url.endsWith(".pdf")) {
+      chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: (tab) => {
+              console.log(document.title);
+              if (document.title !== "") return;
+              const htmlUrl = tab.url.replace(".full.pdf", "").replace(".pdf", "")
               fetch(htmlUrl)
               .then((response) => response.text()
                     .then((text) => {
