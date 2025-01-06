@@ -23,6 +23,7 @@ The extension currently handles:
     - openaccess.thecvf.com
     - ieeexplore.ieee.org (not very well tested)
     - biorxiv
+    - dl.acm.org
 - The 'View article' page of Google Scholar
 
 # Installing
