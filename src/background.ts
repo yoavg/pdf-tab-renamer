@@ -166,6 +166,22 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
           args: [tab]
       })
   }
+  // This approach should work for pretty much any other site where the DOI is included in the URL (see #2)
+  if (tabDomain === "dl.acm.org" && tab.url.includes("/doi/pdf/")) {
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: (tab) => {
+        const doiUrl = tab.url.replace(RegExp("(?:.+)/doi/pdf/([^/]+/[^/]+)"), "https://dx.doi.org/$1");
+        fetch(doiUrl, {headers: {"accept": "application/json"}})
+          .then((response) => response.json()
+            .then((json) => {
+              // wait a second to make the change stick.
+              setTimeout(() => { document.title = `[PDF] ${json.title}` }, 1000);
+            }))
+        },
+      args: [tab]
+    })
+  }
 
 }
 
