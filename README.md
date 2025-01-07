@@ -24,6 +24,7 @@ The extension currently handles:
     - ieeexplore.ieee.org (not very well tested)
     - biorxiv
     - dl.acm.org
+    - journals.aps.org (and various other cases where the PDF's url has a DOI, thanks @dlenski!)
 - The 'View article' page of Google Scholar
 
 # Installing
