@@ -9,7 +9,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       },
     })
   }
-  if (tabDomain === "arxiv.org" && tab.url.includes("/pdf/")) {
+  else if (tabDomain === "arxiv.org" && tab.url.includes("/pdf/")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -24,7 +24,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       args: [tab]
     })
   }
-  if (tabDomain === "aclanthology.org" && tab.url.endsWith(".pdf")) {
+  else if (tabDomain === "aclanthology.org" && tab.url.endsWith(".pdf")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -49,7 +49,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       }
     });
   }
-  if (tabDomain === "proceedings.mlr.press" && tab.url.endsWith(".pdf")) {
+  else if (tabDomain === "proceedings.mlr.press" && tab.url.endsWith(".pdf")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -65,7 +65,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       args: [tab]
     })
   }
-  if (tabDomain === "www.jmlr.org" && tab.url.endsWith(".pdf")) {
+  else if (tabDomain === "www.jmlr.org" && tab.url.endsWith(".pdf")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -81,7 +81,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       args: [tab]
     })
   }
-  if ((tabDomain === "proceedings.neurips.cc" || tabDomain === "proceedings.nips.cc") && tab.url.endsWith(".pdf")) {
+  else if ((tabDomain === "proceedings.neurips.cc" || tabDomain === "proceedings.nips.cc") && tab.url.endsWith(".pdf")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -97,7 +97,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       args: [tab]
     })
   }
-  if (tabDomain === "openreview.net" && tab.url.includes("/pdf?")) {
+  else if (tabDomain === "openreview.net" && tab.url.includes("/pdf?")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -113,7 +113,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       args: [tab]
     })
   }
-  if (tabDomain === "openaccess.thecvf.com" && tab.url.endsWith(".pdf")) {
+  else if (tabDomain === "openaccess.thecvf.com" && tab.url.endsWith(".pdf")) {
       chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: (tab) => {
@@ -148,7 +148,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
   }
   //https://www.biorxiv.org/content/10.1101/2025.01.05.631349v1
   //https://www.biorxiv.org/content/10.1101/2025.01.05.631349v1.full.pdf
-  if (tabDomain === "www.biorxiv.org" && tab.url.endsWith(".pdf")) {
+  else if (tabDomain === "www.biorxiv.org" && tab.url.endsWith(".pdf")) {
       chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: (tab) => {
