@@ -1,7 +1,7 @@
 
 async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
   const tabDomain = new URL(tab.url).hostname;
-  let newTitle: string | null = null;
+  let doiInUrl: string | null = null;
   if (tabDomain === "scholar.google.com" && tab.title.includes("View article")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
@@ -10,7 +10,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       },
     })
   }
-  if (tabDomain === "arxiv.org" && tab.url.includes("/pdf/")) {
+  else if (tabDomain === "arxiv.org" && tab.url.includes("/pdf/")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -25,7 +25,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       args: [tab]
     })
   }
-  if (tabDomain === "aclanthology.org" && tab.url.endsWith(".pdf")) {
+  else if (tabDomain === "aclanthology.org" && tab.url.endsWith(".pdf")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -50,7 +50,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       }
     });
   }
-  if (tabDomain === "proceedings.mlr.press" && tab.url.endsWith(".pdf")) {
+  else if (tabDomain === "proceedings.mlr.press" && tab.url.endsWith(".pdf")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -66,7 +66,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       args: [tab]
     })
   }
-  if (tabDomain === "www.jmlr.org" && tab.url.endsWith(".pdf")) {
+  else if (tabDomain === "www.jmlr.org" && tab.url.endsWith(".pdf")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -82,7 +82,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       args: [tab]
     })
   }
-  if ((tabDomain === "proceedings.neurips.cc" || tabDomain === "proceedings.nips.cc") && tab.url.endsWith(".pdf")) {
+  else if ((tabDomain === "proceedings.neurips.cc" || tabDomain === "proceedings.nips.cc") && tab.url.endsWith(".pdf")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -98,7 +98,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       args: [tab]
     })
   }
-  if (tabDomain === "openreview.net" && tab.url.includes("/pdf?")) {
+  else if (tabDomain === "openreview.net" && tab.url.includes("/pdf?")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (tab) => {
@@ -114,7 +114,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
       args: [tab]
     })
   }
-  if (tabDomain === "openaccess.thecvf.com" && tab.url.endsWith(".pdf")) {
+  else if (tabDomain === "openaccess.thecvf.com" && tab.url.endsWith(".pdf")) {
       chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: (tab) => {
@@ -149,7 +149,7 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
   }
   //https://www.biorxiv.org/content/10.1101/2025.01.05.631349v1
   //https://www.biorxiv.org/content/10.1101/2025.01.05.631349v1.full.pdf
-  if (tabDomain === "www.biorxiv.org" && tab.url.endsWith(".pdf")) {
+  else if (tabDomain === "www.biorxiv.org" && tab.url.endsWith(".pdf")) {
       chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: (tab) => {
@@ -166,21 +166,23 @@ async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
           args: [tab]
       })
   }
-  // This approach should work for pretty much any other site where the DOI is included in the URL (see #2)
-  if (tabDomain === "dl.acm.org" && tab.url.includes("/doi/pdf/")) {
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: (tab) => {
-        const doiUrl = tab.url.replace(RegExp("(?:.+)/doi/pdf/([^/]+/[^/]+)"), "https://dx.doi.org/$1");
-        fetch(doiUrl, {headers: {"accept": "application/json"}})
-          .then((response) => response.json()
-            .then((json) => {
-              // wait a second to make the change stick.
-              setTimeout(() => { document.title = `[PDF] ${json.title}` }, 1000);
-            }))
+  // Match any tab where the DOI is included in the URL, along with a pathname
+  // component of either /doi/ or /pdf/. See #2 for discussion on fine-tuning this.
+  else if ((tab.url.includes("/pdf/") || tab.url.includes("/doi/"))
+           && (doiInUrl = tab.url.match(RegExp("/(10\.[^/]+/[^/?#]+)(?:[/?#]|$)"))?.[1])) {
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: (tab, doiInUrl) => {
+            if (document.title !== "" || document.contentType !== "application/pdf") return;
+            fetch(`https://dx.doi.org/${doiInUrl}`, {headers: {"accept": "application/json"}})
+              .then((response) => response.json()
+                  .then((json) => {
+                      // wait a second to make the change stick.
+                      setTimeout(() => { document.title = `[PDF] ${json.title}` }, 1000);
+                  }))
         },
-      args: [tab]
-    })
+        args: [tab, doiInUrl]
+      })
   }
 
 }
