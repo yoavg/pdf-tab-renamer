@@ -1,7 +1,6 @@
 
 async function retitleIfNeeded(tab: chrome.tabs.Tab): Promise<void> {
   const tabDomain = new URL(tab.url).hostname;
-  let newTitle: string | null = null;
   if (tabDomain === "scholar.google.com" && tab.title.includes("View article")) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
